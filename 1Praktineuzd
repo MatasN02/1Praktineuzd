@@ -1,0 +1,75 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+//Uzkoduojama irasytas tekstas pagal nurodyta poslinki.
+string encrypt(string text, int shift) {
+    string encrypt_text = "";
+    for (int i = 0; i < text.length(); i++) {
+        char c = text[i];
+//Jeigu yra viena is 26 anglisku raidziu tada uzkoduojama.
+        if (isalpha(c)) {
+            int shifted = (toupper(c) - 'A' + shift) % 26;
+            shifted = shifted < 0 ? shifted + 26 : shifted;
+            char shift_c = char(shifted + 'A');
+            if (isupper(c)) {
+                encrypt_text += shift_c;
+            } else {
+                encrypt_text += tolower(shift_c);
+            }
+//Pridetas skaiciu uzkodavimas.
+        } 
+		else if (isdigit(c)) {
+            int shifted = (c - '0' + shift) % 10;
+            shifted = shifted < 0 ? shifted + 10 : shifted;
+            encrypt_text += char(shifted + '0');
+        } 
+//Jeigu nera skaiciu ar vienos is 26 raidziu praleidziama.
+		else {
+            encrypt_text += c;
+        }
+    }
+    return encrypt_text;
+}
+
+//Atkoduojamas tekstas pagal nurodyta poslinki
+string decrypt(string encrypt_text, int shift) {
+    string text = "";
+    for (int i = 0; i < encrypt_text.length(); i++) {
+        char c = encrypt_text[i];
+        if (isalpha(c)) {
+            int shifted = (toupper(c) - 'A' - shift) % 26;
+            shifted = shifted < 0 ? shifted + 26 : shifted;
+            char shift_c = char(shifted + 'A');
+            if (isupper(c)) {
+                text += shift_c;
+            } else {
+                text += tolower(shift_c);
+            }
+        } else if (isdigit(c)) {
+            int shifted = (c - '0' - shift) % 10;
+            shifted = shifted < 0 ? shifted + 10 : shifted;
+            text += char(shifted + '0');
+        } else {
+            text += c;
+        }
+    }
+    return text;
+}
+
+int main() {
+    string text;
+    int shift;
+    cout << "Irasykite teksta: ";
+    getline(cin, text);
+    cout << "Irasykite poslinki: ";
+    cin >> shift;
+
+    string encrypt_text = encrypt(text, shift);
+    cout << "Uzkoduotas tekstas: " << encrypt_text << endl;
+
+    string decrypted = decrypt(encrypt_text, shift);
+    cout << "Atkoduotas tekstas: " << decrypted << endl;
+
+    return 0;
+}
